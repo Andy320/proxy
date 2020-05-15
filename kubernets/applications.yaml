@@ -1,0 +1,272 @@
+##################################################################################################
+# router services
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: router
+  labels:
+    app: router
+    service: router
+spec:
+  ports:
+    - port: 9080
+      name: http
+  selector:
+    app: router
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxy-router
+  labels:
+    account: router
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: router-v1
+  labels:
+    app: router
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: router
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: router
+        version: v1
+    spec:
+      serviceAccountName: proxy-router
+      imagePullSecrets:
+        - name: registry-secret
+      containers:
+        - name: router
+          image: registry.cn-beijing.aliyuncs.com/andy320/router-v1:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9080
+          volumeMounts:
+            - name: config-common
+              mountPath: /etc/config/common
+            - name: config-router
+              mountPath: /etc/config/router
+          env:
+            - name: SERVICES_DOMAIN_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: SERVICES_DOMAIN
+            - name: GRPC_TIMEOUT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: GRPC_TIMEOUT
+            - name: GRPC_CONCURRENCY_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: GRPC_CONCURRENCY
+            - name: HANDLER_HOSTNAME_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: router-config
+                  key: HANDLER_HOSTNAME
+            - name: WS_HEARTBEAT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: router-config
+                  key: WS_HEARTBEAT
+            - name: WS_TIMEOUT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: router-config
+                  key: WS_TIMEOUT
+      volumes:
+        - name: config-common
+          configMap:
+            name: common-config
+        - name: config-router
+          configMap:
+            name: router-config
+---
+##################################################################################################
+# handler services
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: handler
+  labels:
+    app: handler
+    service: handler
+spec:
+  ports:
+    - port: 9000
+      name: grpc-port
+  selector:
+    app: handler
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxy-handler
+  labels:
+    account: handler
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: handler-v1
+  labels:
+    app: handler
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: handler
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: handler
+        version: v1
+    spec:
+      serviceAccountName: proxy-handler
+      imagePullSecrets:
+        - name: registry-secret
+      containers:
+        - name: handler
+          image: registry.cn-beijing.aliyuncs.com/andy320/handler-v1:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: config-common
+              mountPath: /etc/config/common
+            - name: config-handler
+              mountPath: /etc/config/handler
+          env:
+            - name: SERVICES_DOMAIN_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: SERVICES_DOMAIN
+            - name: GRPC_TIMEOUT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: GRPC_TIMEOUT
+            - name: GRPC_CONCURRENCY_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: GRPC_CONCURRENCY
+            - name: BROKER_HOSTNAME_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: handler-config
+                  key: BROKER_HOSTNAME
+          lifecycle:
+            preStop:
+              exec:
+                command: ['/bin/sh', '-c', 'ps aux | grep handler | grep -v grep | cut -c 9-15 | xargs kill -SIGINT']
+      volumes:
+        - name: config-common
+          configMap:
+            name: common-config
+        - name: config-handler
+          configMap:
+            name: handler-config
+---
+##################################################################################################
+# broker services
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  labels:
+    app: broker
+    service: broker
+spec:
+  ports:
+    - port: 9000
+      name: grpc-port
+  selector:
+    app: broker
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: proxy-broker
+  labels:
+    account: broker
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broker-v1
+  labels:
+    app: broker
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broker
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: broker
+        version: v1
+    spec:
+      serviceAccountName: proxy-broker
+      imagePullSecrets:
+        - name: registry-secret
+      containers:
+        - name: broker
+          image: registry.cn-beijing.aliyuncs.com/andy320/broker-v1:1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: config-common
+              mountPath: /etc/config/common
+            - name: config-broker
+              mountPath: /etc/config/broker
+          env:
+            - name: SERVICES_DOMAIN_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: SERVICES_DOMAIN
+            - name: GRPC_TIMEOUT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: GRPC_TIMEOUT
+            - name: GRPC_CONCURRENCY_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: common-config
+                  key: GRPC_CONCURRENCY
+            - name: ROUTER_HOSTNAME_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: broker-config
+                  key: ROUTER_HOSTNAME
+      volumes:
+        - name: config-common
+          configMap:
+            name: common-config
+        - name: config-broker
+          configMap:
+            name: broker-config
+---

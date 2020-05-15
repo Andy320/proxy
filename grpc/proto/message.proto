@@ -1,0 +1,49 @@
+syntax = "proto3";
+package business;
+
+// The entry is a type of change that needs to be applied. It contains two data fields.
+// While the fields are built into the model; their usage is determined by the entry_type.
+//
+// For normal entries, the data field should contain the data change that should be applied.
+// The context field can be used for any contextual data that might be relevant to the
+// application of the data.
+//
+// For configuration changes, the data will contain the ConfChange message and the
+// context will provide anything needed to assist the configuration change. The context
+// if for the user to set and use in this case.
+enum EntryType {
+    EntryNormal = 0;
+    EntryConfChange = 1;
+}
+
+message Entry {
+    EntryType entry_type = 1;
+    uint64 index = 2;
+    bytes data = 3;
+    bytes context = 4;
+}
+
+enum MessageType {
+    MsgRequestHello = 0;
+    MsgRequestHelloResponse = 1;
+}
+
+message Message {
+    MessageType msg_type = 1;
+    uint64 to = 2;
+    uint64 from = 3;
+    uint64 index = 4;
+    repeated Entry entries = 5;
+    bytes context = 6;
+}
+
+enum ConfChangeType {
+    Timeout    = 0;
+}
+
+message ConfChange {
+    ConfChangeType change_type = 2;
+    uint64 node_id = 3;
+    bytes context = 4;
+    uint64 id = 1;
+}

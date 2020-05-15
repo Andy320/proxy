@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "message.proto";
+
+package business;
+
+service Greeter {
+    rpc SayHello (business.Message) returns (business.Message) {}
+}

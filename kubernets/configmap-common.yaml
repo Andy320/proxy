@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-config
+  namespace: default
+data:
+  SERVICES_DOMAIN: default.svc.cluster.local
+  AUTHOR: duoduo
+  GRPC_TIMEOUT: 5
+  GRPC_CONCURRENCY: 30

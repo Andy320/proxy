@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: handler-config
+  namespace: default
+data:
+  BROKER_HOSTNAME: broker

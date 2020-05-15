@@ -1,0 +1,39 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: router
+spec:
+  hosts:
+    - router
+  http:
+    - route:
+        - destination:
+            host: router
+            subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: handler
+spec:
+  hosts:
+    - handler
+  http:
+    - route:
+        - destination:
+            host: handler
+            subset: v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: broker
+spec:
+  hosts:
+    - broker
+  http:
+    - route:
+        - destination:
+            host: broker
+            subset: v1
+---

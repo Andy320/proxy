@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: broker-config
+  namespace: default
+data:
+  ROUTER_HOSTNAME: router
