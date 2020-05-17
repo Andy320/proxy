@@ -12,6 +12,9 @@ shopt -s  expand_aliases
 
 builder cargo build --release
 
-mkdir -p $output_dir && rm -rf $output_dir/* && cp $bin_dir/router $output_dir
+mkdir -p $output_dir && rm -rf $output_dir/*
+cp $bin_dir/router  $output_dir
+cp $bin_dir/handler $output_dir
+cp $bin_dir/broker  $output_dir
 
 
