@@ -1,14 +1,13 @@
 use std::ops::Deref;
-use std::time::{Duration, Instant};
+use std::time::Instant;
 use actix::prelude::*;
 use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServer};
 use actix_web_actors::ws;
 use actix_web::error::{ErrorBadRequest, ErrorUnauthorized};
 use validator::Validate;
 use futures::executor::block_on;
-use grpc::prelude::*;
-use grpc::client::GrpcClient;
 use crate::token::{do_decode, Token, do_encode};
+use crate::grpc::client::GrpcClient;
 
 #[derive(Debug, Validate, Serialize, Deserialize)]
 pub struct IDObject {
@@ -22,7 +21,6 @@ pub struct IDObject {
 pub async fn start(gc: GrpcClient) -> crate::error::Result<()> {
     // http server -> application -> service -> resource -> handler
     info!("start http server ...");
-    // let addr = "0.0.0.0:9080";
     HttpServer::new( move || {
         App::new()
             .data(gc.clone())
@@ -35,7 +33,7 @@ pub async fn start(gc: GrpcClient) -> crate::error::Result<()> {
     })
         .bind(*crate::HTTP_ADDR)?
         .run()
-        .await;
+        .await?;
 
     Ok(())
 }
