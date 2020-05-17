@@ -1,15 +1,14 @@
 #[macro_use]
 extern crate log;
 
-use grpc::client::{GrpcClient, GrpcClientBuilder};
-
+use router::grpc::client::{GrpcClientBuilder, GrpcClient};
 
 #[actix_rt::main]
 async fn main() {
     match GrpcClientBuilder::new().build().await {
         Ok(gc) => {
             info!("connect grpc server successfully");
-            match router::router::start(gc).await {
+            match router::http::start(gc).await {
                 Ok(()) => info!("server shutdown successfully"),
                 Err(e) => error!("server error occurs: {:#?}", e),
             }

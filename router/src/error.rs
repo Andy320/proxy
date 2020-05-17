@@ -1,7 +1,6 @@
 use thiserror::Error;
 use std::{io, result};
 // use std::backtrace::Backtrace;
-use std::error::Error;
 
 pub type Result<T> = result::Result<T, RouterError>;
 
@@ -29,6 +28,12 @@ pub enum RouterError {
     ActixHttpFailure{
         #[from]
         source: actix_http::error::Error,
+        // backtrace: Backtrace,
+    },
+    #[error("tonic transport error")]
+    GRPCTransportFailure{
+        #[from]
+        source: tonic::transport::Error,
         // backtrace: Backtrace,
     },
 }

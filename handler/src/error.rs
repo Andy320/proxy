@@ -1,7 +1,6 @@
 use thiserror::Error;
 use std::{io, result};
 // use std::backtrace::Backtrace;
-use std::error::Error;
 
 pub type Result<T> = result::Result<T, HandlerError>;
 
@@ -11,6 +10,12 @@ pub enum HandlerError {
     IOFailure {
         #[from]
         source: io::Error,
+        // backtrace: Backtrace,
+    },
+    #[error("tonic transport error")]
+    GRPCTransportFailure{
+        #[from]
+        source: tonic::transport::Error,
         // backtrace: Backtrace,
     },
 }

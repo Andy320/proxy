@@ -10,9 +10,9 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
 COPY --from=builder \
-    /root/rust/src/target/x86_64-unknown-linux-musl/release/handler \
+    /root/rust/src/target/x86_64-unknown-linux-musl/release/broker \
     /usr/local/bin/
 
 EXPOSE 9000
 
-ENTRYPOINT ["handler"]
+ENTRYPOINT ["broker"]

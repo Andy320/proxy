@@ -1,9 +1,8 @@
 [workspace]
-
 members = [
   "router",
   "handler",
   "broker",
-  "grpc",
+  "proto",
   "common",
 ]

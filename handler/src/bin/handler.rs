@@ -2,6 +2,7 @@
 extern crate log;
 
 use tokio::signal;
+use handler::grpc::server as gs;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,7 +14,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
     });
 
-    match grpc::server::start_grpc_server(async move {
+    match gs::start_grpc_server(async move {
         rx.await.ok();
     }).await {
         Ok(()) => info!("grpc shutdown successfully"),

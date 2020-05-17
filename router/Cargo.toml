@@ -6,11 +6,11 @@ edition = "2018"
 
 [[bin]]
 name = "router"
-path = "src/bin/router_main.rs"
+path = "src/bin/router.rs"
 
 [dependencies]
 common = { version = "0.1", path = "../common" }
-grpc = { version = "0.1", path = "../grpc" }
+proto = { version = "0.1", path = "../proto" }
 actix = "0.9.0"
 actix-codec = "0.2.0"
 actix-web = "2.0.0"
@@ -32,4 +32,5 @@ clap = "2.33.0"
 thiserror = "1.0.9"
 lazy_static = "1.4.0"
 chrono = "0.4.10"
+tonic = "0.2"
 validator_derive = { version = "0.10", features = ["unic", "phone"] }

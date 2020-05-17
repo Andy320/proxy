@@ -1,16 +1,7 @@
-#[macro_use]
-extern crate log;
-#[macro_use]
-extern crate lazy_static;
-
-pub mod client;
-pub mod server;
-pub mod error;
-
 pub mod pb {
     #![allow(dead_code)]
     #![allow(unused_imports)]
-    include!(concat!(env!("OUT_DIR"), "/business.rs"));
+    include!(concat!(env!("OUT_DIR"), "/greeting.rs"));
 }
 
 pub mod prelude {

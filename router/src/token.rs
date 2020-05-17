@@ -2,7 +2,7 @@ use jsonwebtoken as jwt;
 use jwt::{decode, encode, Header, Validation};
 use chrono::Local;
 
-use crate::error::{Result, RouterError};
+use crate::error::Result;
 use jsonwebtoken::TokenData;
 
 static SECRET: &'static str = "mysecret";
@@ -31,6 +31,7 @@ pub fn do_decode(token: &str) -> Result<TokenData<Claims>> {
     decode::<Claims>(&token, SECRET.as_ref(), &Validation::default()).map_err(Into::into)
 }
 
+#[allow(unused_imports)]
 mod tests {
     use crate::token::{do_encode, do_decode};
 

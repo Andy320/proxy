@@ -10,7 +10,7 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
 COPY --from=builder \
-    /root/rust/src/target/x86_64-unknown-linux-musl/release/server \
+    /root/rust/src/target/x86_64-unknown-linux-musl/release/handler \
     /usr/local/bin/
 
 EXPOSE 9000
