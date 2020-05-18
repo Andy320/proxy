@@ -25,7 +25,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: router-v1
+  name: router
   labels:
     app: router
     version: v1
@@ -46,7 +46,7 @@ spec:
         - name: registry-secret
       containers:
         - name: router
-          image: registry.cn-beijing.aliyuncs.com/andy320/router-v1:1.0.0
+          image: registry.cn-beijing.aliyuncs.com/andy320/router:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9080
@@ -121,7 +121,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: handler-v1
+  name: handler
   labels:
     app: handler
     version: v1
@@ -142,7 +142,7 @@ spec:
         - name: registry-secret
       containers:
         - name: handler
-          image: registry.cn-beijing.aliyuncs.com/andy320/handler-v1:1.0.0
+          image: registry.cn-beijing.aliyuncs.com/andy320/handler:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9000
@@ -211,7 +211,7 @@ metadata:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: broker-v1
+  name: broker
   labels:
     app: broker
     version: v1
@@ -232,7 +232,7 @@ spec:
         - name: registry-secret
       containers:
         - name: broker
-          image: registry.cn-beijing.aliyuncs.com/andy320/broker-v1:1.0.0
+          image: registry.cn-beijing.aliyuncs.com/andy320/broker:v1.0.0
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9000

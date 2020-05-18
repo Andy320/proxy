@@ -13,4 +13,5 @@ path = "src/bin/broker.rs"
 [dependencies]
 common = { version = "0.1", path = "../common" }
 log  = "0.4.8"
+log4rs = "0.12.0"
 tokio = { version = "0.2", features = ["rt-threaded", "time", "macros", "stream", "fs", "signal"] }

@@ -33,4 +33,5 @@ thiserror = "1.0.9"
 lazy_static = "1.4.0"
 chrono = "0.4.10"
 tonic = "0.2"
+log4rs = "0.12.0"
 validator_derive = { version = "0.10", features = ["unic", "phone"] }

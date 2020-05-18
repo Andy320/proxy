@@ -1,0 +1,9 @@
+FROM alpine:3.11
+#RUN apk --no-cache add ca-certificates
+
+ADD output/handler /usr/local/bin/
+ADD log4rs.yaml /etc/handler/
+
+EXPOSE 9000 9080
+
+ENTRYPOINT ["handler"]
