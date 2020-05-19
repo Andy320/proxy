@@ -5,3 +5,8 @@ kubernets
 proto
 router
 target
+examples
+README.md
+log4rs.yaml
+credential.txt
+Cargo*

@@ -43,7 +43,7 @@ spec:
     spec:
       serviceAccountName: proxy-router
       imagePullSecrets:
-        - name: registry-secret
+        - name: myalisecret
       containers:
         - name: router
           image: registry.cn-beijing.aliyuncs.com/andy320/router:v1.0.0
@@ -139,7 +139,7 @@ spec:
     spec:
       serviceAccountName: proxy-handler
       imagePullSecrets:
-        - name: registry-secret
+        - name: myalisecret
       containers:
         - name: handler
           image: registry.cn-beijing.aliyuncs.com/andy320/handler:v1.0.0
@@ -229,7 +229,7 @@ spec:
     spec:
       serviceAccountName: proxy-broker
       imagePullSecrets:
-        - name: registry-secret
+        - name: myalisecret
       containers:
         - name: broker
           image: registry.cn-beijing.aliyuncs.com/andy320/broker:v1.0.0

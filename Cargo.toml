@@ -5,4 +5,9 @@ members = [
   "broker",
   "proto",
   "common",
+
+  # Non-published crates
+  "examples",
+
+  # Tests
 ]

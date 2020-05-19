@@ -1,0 +1,30 @@
+[package]
+name = "examples"
+version = "0.1.0"
+authors = ["Andy320 <25574522@qq.com>"]
+edition = "2018"
+
+[[bin]]
+name = "client_test"
+path = "src/connect/client.rs"
+
+[dependencies]
+actix = "0.9.0"
+actix-codec = "0.2.0"
+actix-web = "2.0.0"
+actix-web-actors = "2.0.0"
+actix-files = "0.2.1"
+actix-rt = "1.0.0"
+actix-http = "1.0.1"
+awc = "1.0.1"
+log  = "0.4.8"
+futures = "0.3.1"
+clap = "2.33.0"
+ctrlc = "3.1.3"
+json = "0.12.1"
+serde = "1.0"
+serde_json = "1.0"
+serde_derive = "1.0"
+bytes = "0.5.3"
+router = { version = "0.1", path = "../router" }
+tokio = { version = "0.2", features = ["rt-threaded", "time", "macros", "stream", "fs", "signal"] }
