@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+import "message.proto";
+
+package proxy;
+
+service Handler {
+    rpc HeartBeaten (proxy.Message) returns (proxy.Message) {}
+}
+
+service Router {
+    rpc SendOut (proxy.Message) returns (proxy.Message) {}
+}
+
+service Broker {
+    rpc Push (proxy.Message) returns (proxy.Message) {}
+}

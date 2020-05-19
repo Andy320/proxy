@@ -1,9 +1,0 @@
-syntax = "proto3";
-
-import "message.proto";
-
-package greeting;
-
-service Greeter {
-    rpc SayHello (greeting.Message) returns (greeting.Message) {}
-}

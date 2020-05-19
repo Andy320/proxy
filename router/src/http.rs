@@ -102,7 +102,7 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
             Ok(ws::Message::Ping(msg)) => {
                 self.hb_now = Instant::now();
                 ctx.pong(&msg);
-                let r =  block_on(self.gc.say_hello());
+                let r =  block_on(self.gc.heart_beaten());
                 match r {
                     Ok(()) => {info!("call grpc done")},
                     Err(e) => error!("error in grpc call: {:?}", e),

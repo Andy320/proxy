@@ -1,5 +1,5 @@
 syntax = "proto3";
-package greeting;
+package proxy;
 
 // The entry is a type of change that needs to be applied. It contains two data fields.
 // While the fields are built into the model; their usage is determined by the entry_type.
@@ -24,8 +24,18 @@ message Entry {
 }
 
 enum MessageType {
+    // for testing
     MsgRequestHello = 0;
     MsgRequestHelloResponse = 1;
+    // for handler
+    MsgRequestHeartBeaten = 2;
+    MsgRequestHeartBeatenResponse = 3;
+    // for router
+    MsgRequestSendOut = 4;
+    MsgRequestSendOutResponse = 5;
+    // for broker
+    MsgRequestPush = 6;
+    MsgRequestPushResponse = 7;
 }
 
 message Message {
@@ -42,8 +52,8 @@ enum ConfChangeType {
 }
 
 message ConfChange {
+    uint64 id = 1;
     ConfChangeType change_type = 2;
     uint64 node_id = 3;
     bytes context = 4;
-    uint64 id = 1;
 }

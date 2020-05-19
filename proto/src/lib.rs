@@ -1,7 +1,7 @@
 pub mod pb {
     #![allow(dead_code)]
     #![allow(unused_imports)]
-    include!(concat!(env!("OUT_DIR"), "/greeting.rs"));
+    include!(concat!(env!("OUT_DIR"), "/proxy.rs"));
 }
 
 pub mod prelude {
@@ -18,6 +18,7 @@ pub mod util {
                 data: data.as_bytes().to_vec(),
                 ..Default::default()
             }),
+
             ..Default::default()
         };
         m
