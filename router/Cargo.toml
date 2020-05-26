@@ -33,6 +33,6 @@ thiserror = "1.0.9"
 lazy_static = "1.4.0"
 chrono = "0.4.10"
 tonic = "0.2"
+tokio = { version = "0.2", features = ["full"] }
 log4rs = "0.12.0"
 validator_derive = { version = "0.10", features = ["unic", "phone"] }
-tokio = { version = "0.2", features = ["rt-threaded", "time", "macros", "stream", "fs", "signal"] }

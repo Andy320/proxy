@@ -14,4 +14,5 @@ service Router {
 
 service Broker {
     rpc Push (proxy.Message) returns (proxy.Message) {}
+    rpc Online (proxy.Message) returns (proxy.Message) {}
 }

@@ -1,4 +1,4 @@
-FROM alpine:3.11
+FROM registry.cn-beijing.aliyuncs.com/andy320/dev-alpine3.11:v1.0.0
 #RUN apk --no-cache add ca-certificates
 
 ADD output/handler /usr/local/bin/

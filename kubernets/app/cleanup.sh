@@ -1,7 +1,9 @@
 #!/bin/bash
+kube_dir="$HOME/rust_projects/proxy/kubernets"
+app_dir="$kube_dir/app"
 
-cd $HOME/rust_projects/proxy/kubernets/
-
+cd "$app_dir" || exit
+echo "deleting..."
 kubectl delete -f virtual-service-normal.yaml
 kubectl delete -f destinations.yaml
 kubectl delete -f proxy-gateway.yaml

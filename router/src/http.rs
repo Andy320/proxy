@@ -5,9 +5,10 @@ use actix_web::{middleware, web, App, Error, HttpRequest, HttpResponse, HttpServ
 use actix_web_actors::ws;
 use actix_web::error::{ErrorBadRequest, ErrorUnauthorized};
 use validator::Validate;
-use futures::executor::block_on;
 use crate::token::{do_decode, Token, do_encode};
-use crate::grpc::client::GrpcClient;
+use crate::grpc::client::Handler;
+use proto::util;
+use proto::pb::{Message, MessageType, Entry, EntryType};
 
 #[derive(Debug, Validate, Serialize, Deserialize)]
 pub struct IDObject {
@@ -18,12 +19,12 @@ pub struct IDObject {
     password: String,
 }
 
-pub async fn start(gc: GrpcClient) -> crate::error::Result<()> {
+pub async fn start(h: Handler) -> crate::error::Result<()> {
     // http server -> application -> service -> resource -> handler
     info!("start http server ...");
-    HttpServer::new( move || {
+    HttpServer::new(move || {
         App::new()
-            .data(gc.clone())
+            .data(h.clone())
             .wrap(middleware::Logger::default())
             .service(web::resource("/renew")
                 .data(web::JsonConfig::default())
@@ -31,14 +32,14 @@ pub async fn start(gc: GrpcClient) -> crate::error::Result<()> {
             .service(web::resource("/ws")
                 .route(web::get().to(ws_index)))
     })
-        .bind(*crate::HTTP_ADDR)?
+        .bind("0.0.0.0:9080")?
         .run()
         .await?;
 
     Ok(())
 }
 
-async fn ws_index(r: HttpRequest, stream: web::Payload, data: web::Data<GrpcClient>) -> Result<HttpResponse, Error> {
+async fn ws_index(r: HttpRequest, stream: web::Payload, data: web::Data<Handler>) -> Result<HttpResponse, Error> {
     debug!("request is: {:?}", r);
     // let s = data.get_ref();
     let value = r.headers()
@@ -63,12 +64,12 @@ async fn renew(item: web::Json<IDObject>, req: HttpRequest) -> Result<HttpRespon
 
 struct MyWebSocket {
     hb_now: Instant,
-    gc: GrpcClient,
+    handler: Handler,
 }
 
 impl MyWebSocket {
-    fn new(s: &GrpcClient) -> Self {
-        Self { hb_now: Instant::now(), gc: s.clone() }
+    fn new(s: &Handler) -> Self {
+        Self { hb_now: Instant::now(), handler: s.clone() }
     }
 
     fn hb(&self, ctx: &mut <Self as Actor>::Context) {
@@ -102,11 +103,17 @@ impl StreamHandler<Result<ws::Message, ws::ProtocolError>> for MyWebSocket {
             Ok(ws::Message::Ping(msg)) => {
                 self.hb_now = Instant::now();
                 ctx.pong(&msg);
-                let r =  block_on(self.gc.heart_beaten());
-                match r {
-                    Ok(()) => {info!("call grpc done")},
-                    Err(e) => error!("error in grpc call: {:?}", e),
-                }
+
+                let str = "hello, handler";
+                let m = util::new_msg(MessageType::MsgRequestHeartBeaten, str);
+                let request = tonic::Request::new(m);
+                let mut h = self.handler.clone();
+                actix_rt::spawn(async move {
+                    let response = h.heart_beaten(request).await.unwrap();
+                    if let Some(s) = util::get_entry0_data(response.into_inner()) {
+                        debug!("{}", s)
+                    }
+                })
             }
             Ok(ws::Message::Pong(_)) => {
                 self.hb_now = Instant::now();

@@ -1,6 +1,5 @@
 use tonic::{transport::Server, Request, Response, Status};
 use proto::pb::{Message, MessageType, Entry, EntryType, router_server::{Router, RouterServer}};
-
 use futures::Future;
 use proto::util;
 

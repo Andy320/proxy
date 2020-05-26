@@ -36,6 +36,9 @@ enum MessageType {
     // for broker
     MsgRequestPush = 6;
     MsgRequestPushResponse = 7;
+
+    MsgRequestOnline = 8;
+    MsgRequestOnlineResponse = 9;
 }
 
 message Message {

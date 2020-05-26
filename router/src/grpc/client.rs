@@ -4,50 +4,32 @@ use tonic::transport::{Channel, Endpoint};
 use tonic::{metadata::MetadataValue, Code, Request, Response, Status};
 use crate::error;
 use proto::util;
+use tonic::codegen::{Context, Pin, Poll};
+use actix::ActorFuture;
 
-type TonicClient = HandlerClient<Channel>;
+pub type Handler = HandlerClient<Channel>;
 
 #[derive(Debug, Clone)]
-pub struct GrpcClientBuilder {}
+pub struct Builder;
 
-impl GrpcClientBuilder {
-    pub fn new() -> GrpcClientBuilder {
-        GrpcClientBuilder {}
+impl Builder {
+    pub fn new() -> Builder {
+        Builder
     }
 
-    pub async fn build(&self) -> error::Result<GrpcClient> {
+    pub async fn build(&self) -> error::Result<Handler> {
         let mut grpc_addr = String::from("http://");
         grpc_addr.push_str(&*crate::HANDLER_HOSTNAME);
         grpc_addr.push_str(".");
-        grpc_addr.push_str(&*crate::SERVER_DOMAIN);
+        grpc_addr.push_str(&*common::SERVER_DOMAIN);
         grpc_addr.push_str(":9000/handler");
         info!("grpc url is {}", grpc_addr);
         let endpoint = Endpoint::from_shared(grpc_addr)
             .expect("failed to be converted into a uri")
-            .timeout(*crate::GRPC_TIMEOUT)
-            .concurrency_limit(*crate::GRPC_CONCURRENCY);
+            .timeout(*common::GRPC_TIMEOUT)
+            .concurrency_limit(*common::GRPC_CONCURRENCY);
         let channel = endpoint.connect().await?;
-        let tc = TonicClient::new(channel.clone());
-        Ok(GrpcClient { tc })
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct GrpcClient {
-    tc: TonicClient,
-}
-
-impl GrpcClient {
-    pub async fn heart_beaten(&mut self) -> Result<(), Box<dyn std::error::Error>> {
-        let str = "hello, handler";
-        let m = util::new_msg(MessageType::MsgRequestHeartBeaten, str);
-        let request = tonic::Request::new(m);
-        let response = self.tc.heart_beaten(request).await?;
-        // debug!("RESPONSE={:?}", response);
-        if let Some(s) = util::get_entry0(response.into_inner()) {
-            debug!("{}", s)
-        }
-
-        Ok(())
+        let h = Handler::new(channel.clone());
+        Ok(h)
     }
 }

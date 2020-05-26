@@ -1,0 +1,62 @@
+##################################################################################################
+# redis service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-master
+  labels:
+    service: redis-master
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    app: redis-master
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: redis-master
+  labels:
+    account: redis-master
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-master
+  labels:
+    app: redis-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-master
+  template:
+    metadata:
+      labels:
+        app: redis-master
+    spec:
+      serviceAccountName: redis-master
+      imagePullSecrets:
+        - name: myalisecret
+      containers:
+        - name: redis-master
+          image: registry.cn-beijing.aliyuncs.com/andy320/dev-redis5:v1.0.0
+          imagePullPolicy: IfNotPresent
+          command: ['sh']
+          args:
+            - "/usr/local/bin/start_redis.sh"
+            - "master"
+          ports:
+            - containerPort: 6379
+          resources:
+            limits:
+              cpu: "0.1"
+          volumeMounts:
+            - mountPath: /var/opt
+              name: data
+      volumes:
+        - name: data
+          emptyDir: {}
+---
